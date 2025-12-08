@@ -15,7 +15,7 @@ DATABASE = os.getenv("database")
 SCHEMA = os.getenv("schema")
 
 
-def simple_query():
+def simple_query(query: str):
     """ """
     try:
         with connect(
@@ -27,12 +27,7 @@ def simple_query():
             schema=SCHEMA,
         ) as conn:
             with conn.cursor() as cs:
-                print(cs.execute("select 1+1").fetchall())
-                print(
-                    cs.execute(
-                        "select A.*, B.* FROM TPCH_SF1.ORDERS A JOIN TPCH_SF1.CUSTOMER B ON A.O_CUSTKEY = B.C_CUSTKEY WHERE A.O_ORDERDATE BETWEEN '1992-12-01' and '1992-12-31' ORDER BY A.O_ORDERDATE DESC"
-                    ).fetchall()
-                )
+                print(cs.execute(query).fetchall())
     except Exception as err:
         print(f"Snowflake connection error : {err}")
 
@@ -40,7 +35,10 @@ def simple_query():
 def main():
     """ """
     print(f"Account : {ACCOUNT}")
-    simple_query()
+    query_01 = "select 1+1"
+    query_02 = "select A.*, B.* FROM TPCH_SF1.ORDERS A JOIN TPCH_SF1.CUSTOMER B ON A.O_CUSTKEY = B.C_CUSTKEY WHERE A.O_ORDERDATE BETWEEN '1992-12-01' and '1992-12-31' ORDER BY A.O_ORDERDATE DESC"
+    simple_query(query=query_01)
+    simple_query(query=query_02)
 
 
 if __name__ == "__main__":
